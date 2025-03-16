@@ -16,7 +16,7 @@ const int BUTTON3 = 9; // 버튼 3: ON/OFF모드
 const int POT_PIN = A0; // 가변저항 입력 핀.
 
 // 시스템 모드 정의
-enum Mode { NORMAL, EMERGENCY, BLINK_ALL, OFF }; // 신호등의 4가지 동작 모드 정의의
+enum Mode { NORMAL, EMERGENCY, BLINK_ALL, OFF }; // 신호등의 4가지 동작 모드 정의
 Mode currentMode = NORMAL; // 현재 LED의 동작 모드를 저장하는 변수 
 
 // 밝기 및 신호등 타이머 변수
