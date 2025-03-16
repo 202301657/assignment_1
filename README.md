@@ -7,7 +7,7 @@
 
 ## 과제 설명
 
-![이미지 설명](image\assignment_description.png)
+![이미지 설명](image/assignment_description.png)
 ![이미지 설명2](image\assignment_description2.png)
 
 ## 동작 시연 영상
