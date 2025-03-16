@@ -8,13 +8,13 @@
 ## 과제 설명
 
 ![이미지 설명](image/assignment_description.png)
-![이미지 설명2](image\assignment_description2.png)
+![이미지 설명2](image/assignment_description2.png)
 
 ## 동작 시연 영상
 
 아래 사진을 클릭하면 동작이 시연되는 것을 확인해볼 수 있습니다.
 
-[![시연과 설명 영상](image\thumnail.jpg)](https://www.youtube.com/watch?v=7Dofh5zMiac)
+[![시연과 설명 영상](image/thumnail.jpg)](https://www.youtube.com/watch?v=7Dofh5zMiac)
 
 ---
 
@@ -38,10 +38,10 @@ add project하여 추가하고 싶은 프로젝트를 선택
 ### 회로도
 직접 연결한 회로도와 틴커캐드로 보기 쉽게 정리한 회로도 사진입니다.
 - 직접 연결한 회로도
-![회로도1](image\circuit_me.jpg)
+![회로도1](image/circuit_me.jpg)
 
 - 틴커캐드로 정리한 회로도 사진
-![회로도2](image\tinkercad.png)
+![회로도2](image/tinkercad.png)
 
 | 연결된 부품 | 핀 번호 | 상태 |
 |-----------|---------|------|
