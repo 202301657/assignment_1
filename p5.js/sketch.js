@@ -13,6 +13,8 @@ let yellowTimeBtn;
 let greenTimeBtn;
 // UI에서 값을 표시하는 버튼
 
+// 과제 업그레이드 - 신호등 과제 + 제스처 인식
+
 function setup() { // 초기 설정(처음 한 번만 실행)
   createCanvas(800, 600); // 800x600 크기의 캔버스를 생성 (p5.js에서 그래픽 요소를 그릴 공간)
   port = createSerial(); // 시리얼 포트 객체를 생성

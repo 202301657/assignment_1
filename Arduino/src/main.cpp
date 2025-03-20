@@ -41,6 +41,10 @@ void buttonPressed2();
 void buttonPressed3();
 void updateTime();
 
+// 과제 업그레이드
+// void updateTime();
+// 
+
 // TaskScheduler 설정
 Scheduler runner; // TaskScheduler 객체: 여러 작업을 관리 
 // Task 태스크이름(시간(이 시간 간격으로 실행), 어떤식으로 실행할지(TASK_ONCE: 한 번만 실행/TASK_FOREVER: 계속 실행), 함수, 스케줄러, 활성화여부)
@@ -54,6 +58,10 @@ Task tBlinkAll(1000, TASK_FOREVER, &updateBlinkAllMode, &runner, false);
 Task tOff(100, TASK_FOREVER, &updateOffMode, &runner, false);
 Task tBrightness(100, TASK_FOREVER, &readBrightness, &runner, true);
 Task tupdateTime(1000, TASK_FOREVER, &updateTime, &runner, true);
+
+// 과제 업그레이드 
+// Task tmotion(1000, TASK_FOREVER, &motion, &runner, true);
+//
 
 void setup() {
     Serial.begin(9600); // 시리얼 통신을 9600bps로 시작
@@ -121,23 +129,23 @@ void setMode() {
     tOff.disable();
 
     // 현재 모드에 맞는 Task실행 
-    Serial.print("MODE:"); // 시리얼 모니터에 출력하여 p5.js에 값을 보냄 
+    // Serial.print("MODE:"); // 시리얼 모니터에 출력하여 p5.js에 값을 보냄 
     switch (currentMode) {
         case NORMAL:
             tRed.restart();
-            Serial.println("NORMAL");
+            Serial.println("MODE:NORMAL\n");
             break;
         case EMERGENCY:
             tEmergency.enable();
-            Serial.println("EMERGENCY");
+            Serial.println("MODE:EMERGENCY\n");
             break;
         case BLINK_ALL:
             tBlinkAll.enable();
-            Serial.println("BLINK_ALL");
+            Serial.println("MODE:BLINK_ALL\n");
             break;
         case OFF:
             tOff.enable();
-            Serial.println("OFF");
+            Serial.println("MODE:OFF\n");
             break;
     }
 }
@@ -246,34 +254,45 @@ void updateOffMode() {
 }
 
 void updateTime(){
-    if (Serial.available()) { // 시리얼 입력(p5.js에서 받아오는 값)이 있으면 
+    if (Serial.available() > 0) { // 시리얼 입력(p5.js에서 받아오는 값)이 있으면 
         String input = Serial.readStringUntil('\n'); // 한 줄(\n기준)을 읽어옴
         input.trim(); // 공백 제거
-        
-        Serial.println(input);
         if (input.startsWith("CHANGE:")) { // CHANGE로 시작하는 형태의 문자열 처리
           // ex) "CHANGE:RED:2000:YELLOW:500:GREEN:3000"
           // indexOf()와 substring()을 이용해 숫자 값을 추출하여 toInt()로 변환
-          int rIndex = input.indexOf("RED:") + 4;
-          int yIndex = input.indexOf("YELLOW:") + 7;
-          int gIndex = input.indexOf("GREEN:") + 6;
-    
-          int newredTime = input.substring(rIndex, yIndex - 7).toInt();
-          int newyellowTime = input.substring(yIndex, gIndex - 6).toInt();
-          int newgreenTime = input.substring(gIndex).toInt();
-    
-          // 변경된 값을 시리얼 모니터에 출력
-          Serial.print("UPDATED_TIMES:");
-          Serial.print(newredTime);
-          Serial.print(",");
-          Serial.print(newyellowTime);
-          Serial.print(",");
-          Serial.println(newgreenTime);
-    
-          // 변경된 시간 적용
-          redTime = newredTime;
-          yellowTime = newyellowTime;
-          greenTime = newgreenTime;
+            int rIndex = input.indexOf("RED:") + 4;
+            int yIndex = input.indexOf("YELLOW:") + 7;
+            int gIndex = input.indexOf("GREEN:") + 6;
+        
+            int newredTime = input.substring(rIndex, yIndex - 7).toInt();
+            int newyellowTime = input.substring(yIndex, gIndex - 6).toInt();
+            int newgreenTime = input.substring(gIndex).toInt();
+        
+            // 변경된 값을 시리얼 모니터에 출력
+            Serial.print("UPDATED_TIMES:");
+            Serial.print(newredTime);
+            Serial.print(",");
+            Serial.print(newyellowTime);
+            Serial.print(",");
+            Serial.println(newgreenTime);
+        
+            // 변경된 시간 적용
+            redTime = newredTime;
+            yellowTime = newyellowTime;
+            greenTime = newgreenTime;
+        }
+        if(input.startsWith("MODE:")){
+            String motion = input.substring(5);
+            if(motion == "EMERGENCY"){
+                currentMode = EMERGENCY;
+            }
+            else if(motion == "BLINK_ALL"){
+                currentMode = BLINK_ALL;
+            }
+            else if(motion == "OFF"){
+                currentMode = OFF;
+            }
+            setMode();
         }
     }
 }
