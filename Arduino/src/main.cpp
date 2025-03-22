@@ -2,9 +2,6 @@
 #include <TaskScheduler.h>  // 여러 작업(Task)을 일정한 간격으로 실행할 수 있게 해주는 라이브러리.
 #include <PinChangeInterrupt.h>  // 특정 핀에서 신호가 변화할 때 인터럽트를 걸 수 있도록 해주는 라이브러리.
 
-
-// check 
-
 // LED 및 버튼 핀 정의
 const int LED_R = 6; // 빨간색 LED
 const int LED_Y = 3; // 노란색 LED
@@ -291,6 +288,9 @@ void updateTime(){
             }
             else if(motion == "OFF"){
                 currentMode = OFF;
+            }
+            else if(motion == "NORMAL"){
+                currentMode = NORMAL;
             }
             setMode();
         }
