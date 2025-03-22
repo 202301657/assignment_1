@@ -38,10 +38,6 @@ void buttonPressed2();
 void buttonPressed3();
 void updateTime();
 
-// 과제 업그레이드
-// void updateTime();
-// 
-
 // TaskScheduler 설정
 Scheduler runner; // TaskScheduler 객체: 여러 작업을 관리 
 // Task 태스크이름(시간(이 시간 간격으로 실행), 어떤식으로 실행할지(TASK_ONCE: 한 번만 실행/TASK_FOREVER: 계속 실행), 함수, 스케줄러, 활성화여부)
@@ -55,10 +51,6 @@ Task tBlinkAll(1000, TASK_FOREVER, &updateBlinkAllMode, &runner, false);
 Task tOff(100, TASK_FOREVER, &updateOffMode, &runner, false);
 Task tBrightness(100, TASK_FOREVER, &readBrightness, &runner, true);
 Task tupdateTime(1000, TASK_FOREVER, &updateTime, &runner, true);
-
-// 과제 업그레이드 
-// Task tmotion(1000, TASK_FOREVER, &motion, &runner, true);
-//
 
 void setup() {
     Serial.begin(9600); // 시리얼 통신을 9600bps로 시작
@@ -250,6 +242,7 @@ void updateOffMode() {
     Serial.println("OFF");
 }
 
+
 void updateTime(){
     if (Serial.available() > 0) { // 시리얼 입력(p5.js에서 받아오는 값)이 있으면 
         String input = Serial.readStringUntil('\n'); // 한 줄(\n기준)을 읽어옴
@@ -278,6 +271,7 @@ void updateTime(){
             yellowTime = newyellowTime;
             greenTime = newgreenTime;
         }
+        // 과제 업그레이드
         if(input.startsWith("MODE:")){
             String motion = input.substring(5);
             if(motion == "EMERGENCY"){
@@ -294,5 +288,6 @@ void updateTime(){
             }
             setMode();
         }
+        //
     }
 }

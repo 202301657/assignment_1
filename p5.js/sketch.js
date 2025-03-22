@@ -11,60 +11,64 @@ let brightBtn;
 let redTimeBtn;
 let yellowTimeBtn;
 let greenTimeBtn;
+let textMODE = "NORMAL";
 // UI에서 값을 표시하는 버튼
 
-// 과제 업그레이드
-let handPose;
-let video;
-let hands = [];
-let Lhand = 0;
-let Rhand = 0;
-let keypoints = [];
-let fingersUp;
-let prevFingersUp = -1; // 이전 손가락 개수 저장 
+// 과제 업그레이드---
+let handPose;  // ml5.handPose()를 통해 손 모양을 추적하는 객체
+let video;     // 웹캠 비디오 스트림을 받을 변수
+let hands = [];  // 추적된 손 데이터를 저장하는 배열
+let Lhand = 0;   // 왼손을 구별하기 위한 변수 (현재 사용되지 않음)
+let Rhand = 0;   // 오른손을 구별하기 위한 변수 (현재 사용되지 않음)
+let keypoints = [];  // 손의 주요 지점을 저장하는 배열 (현재 사용되지 않음)
+let fingersUp;      // 손가락이 올라간 상태를 나타내는 변수 (현재 사용되지 않음)
+let prevFingersUp = -1; // 이전에 몇 개의 손가락이 올라갔는지 저장하는 변수
 
-
+// 페이지 로드 시 ml5 모델을 미리 불러옴
 function preload() {
-  handPose = ml5.handPose();
+  handPose = ml5.handPose();  // handPose 모델을 불러옴
 }
 
-
+// 손 추적 결과를 받는 함수
 function gotHands(results) {
-  hands = results;
+  hands = results;  // 추적된 손 데이터를 hands 배열에 저장
 }
 
-function drawBidirectionalArrow(x, y, len) {
+// 양방향 화살표를 그리는 함수
+function drawdirectionalArrow(x, y, len) {
   // 화살표의 선 그리기
-  stroke(0);
-  line(x, y, x, y + len);
+  stroke(0);  // 선의 색상을 검정색으로 설정
+  line(x, y, x, y + len);  // 주어진 x, y 좌표에서 세로로 선을 그림
 
   // 위쪽 화살촉
-  let arrowSize = 10;
-  beginShape();
+  let arrowSize = 10;  // 화살촉 크기 설정
+  beginShape();  // 도형 시작
   vertex(x - arrowSize, y + arrowSize);  // 왼쪽 화살촉
   vertex(x, y);  // 화살표 끝
   vertex(x + arrowSize, y + arrowSize);  // 오른쪽 화살촉
-  endShape(CLOSE);
+  endShape(CLOSE);  // 도형 끝
 
   // 아래쪽 화살촉
-  beginShape();
+  beginShape();  // 도형 시작
   vertex(x - arrowSize, y + len - arrowSize);  // 왼쪽 화살촉
   vertex(x, y + len);  // 화살표 끝
   vertex(x + arrowSize, y + len - arrowSize);  // 오른쪽 화살촉
-  endShape(CLOSE);
+  endShape(CLOSE);  // 도형 끝
 }
-// 
+//------------------
 
 function setup() { // 초기 설정(처음 한 번만 실행)
-  createCanvas(500, 700); // 800x600 크기의 캔버스를 생성 (p5.js에서 그래픽 요소를 그릴 공간)
+  createCanvas(500, 700); // 500x700 크기의 캔버스를 생성 (p5.js에서 그래픽 요소를 그릴 공간)
   
-  // 과제 업그레이드 
-  
-  video = createCapture(VIDEO, {flipped:true});
-  video.size(500, 350);
-  video.hide();
-  handPose.detectStart(video, gotHands);
-  //
+  // 과제 업그레이드----
+  // 웹캠 캡처를 생성하여 비디오 스트림을 받음
+  video = createCapture(VIDEO, {flipped: true});  // 웹캠 비디오 캡처, 'flipped: true'로 비디오 화면을 좌우 반전시킴
+  video.size(500, 350);  // 비디오 크기를 500x350으로 설정
+  video.hide();  // 비디오 요소를 화면에 표시하지 않음 (캔버스에 그려지지 않도록 숨김)
+
+  // handPose.detectStart() 메서드를 사용하여 손 추적을 시작
+  handPose.detectStart(video, gotHands);  // 손 추적을 시작하고, 결과를 gotHands 함수로 전달
+  //------------------
   
   port = createSerial(); // 시리얼 포트 객체를 생성
 
@@ -120,41 +124,49 @@ function setup() { // 초기 설정(처음 한 번만 실행)
   changeBtn.mousePressed(changeBtnClick);
 
   // 위아래 화살촉이 있는 세로 화살표 그리기
-  drawBidirectionalArrow(400, 10, 200);
+  drawdirectionalArrow(400, 10, 200);
   
   frameRate(60);  // 초당 60프레임으로 설정
 }
 
 
 function draw() {   // 반복 실행됨 
-  // 과제 업그레이드
-  image(video, 0, 0, width, height / 2);
+  // 과제 업그레이드---
+  // 비디오 캡처를 화면에 그리기 (캔버스의 왼쪽 상단(0, 0) 위치에 비디오를 맞추고, 화면 크기에 맞게 크기를 설정)
+  image(video, 0, 0, width, height / 2);  // 비디오를 캔버스에 표시, 화면의 윗부분 절반만 비디오로 채움
 
+  // 손에 대한 반복문
   for (let i = 0; i < hands.length; i++) {
-    let hand = hands[i];
-    keypoints = hand.keypoints;
+    let hand = hands[i];  // hands 배열에서 각 손을 가져옴
+    keypoints = hand.keypoints;  // 손의 주요 키포인트(관절 위치) 정보 저장
+
+    // 손의 키포인트마다 반복
     for (let j = 0; j < hand.keypoints.length; j++) {
-      let keypoint = hand.keypoints[j];
+      let keypoint = hand.keypoints[j];  // 각 손의 키포인트를 가져옴
       
-      // 화면 상단 절반에만 점을 표시
+      // 화면 상단 절반에만 점을 표시 (y 좌표가 화면 절반보다 작을 때만 처리)
       if (keypoint.y < height / 2 - 10) {
-        fill(255, 0, 0);
-        noStroke();
-        circle(500 - keypoint.x, keypoint.y, 10);
+        fill(255, 0, 0);  // 빨간색으로 점을 채움
+        noStroke();  // 점 주위의 선을 없앰
+        circle(500 - keypoint.x, keypoint.y, 10);  // 점을 그리는데 x는 좌우 반전되어 그려짐
       }
     }
     
-    // 손 제스처 분석
-    Left_Right();
+    // 손 제스처 분석 함수 호출
+    Left_Right();  // 손이 왼손인지 오른손인지 구분하는 함수 호출
 
-    if(Lhand == 1 && Rhand == 0){ 
-      detectGestureL(hand, keypoints);   
+    // 왼손만 인식된 경우 (Lhand가 1이고 Rhand가 0일 때)
+    if (Lhand == 1 && Rhand == 0){ 
+      detectGestureL(hand, keypoints);  // 왼손 제스처를 감지하는 함수 호출
     }
-    if(Lhand == 0 && Rhand == 1){
-      detectGestureR(hand, keypoints);
+
+    // 오른손만 인식된 경우 (Lhand가 0이고 Rhand가 1일 때)
+    if (Lhand == 0 && Rhand == 1){
+      detectGestureR(hand, keypoints);  // 오른손 제스처를 감지하는 함수 호출
     }
   }
-    
+  //------------------
+  
   if (port.available()) { // 새로운 시리얼 데이터가 있는지 확인
     let str = port.readUntil("\n").trim(); // 한 줄("\n"기준) 읽고 trim()으로 공백 제거
     // print("str:",str,"\n"); // 시리얼 모니터에 출력
@@ -164,6 +176,7 @@ function draw() {   // 반복 실행됨
     }
     else if(str.startsWith("MODE:")){
       let motion = str.substring(5);
+      textMODE = motion;
       print("Mode changed to:", motion); // 바뀐 모드를 콘솔에 출력 
     }
     currentColor = str;
@@ -173,80 +186,85 @@ function draw() {   // 반복 실행됨
   drawColorCircle(); // 신호등 색깔 업데이트
   drawBrightnessGauge();
   
-  // 과제 업그레이드
-  drawBidirectionalArrow(400, 10, 200);
+  // 과제 업그레이드---
+  drawBidirectionalArrow(400, 10, 200); // 화면에 주기 조정 범위를 나타내는 화살표
+  //------------------
 }
 
-// 과제 업그레이드
-// 손가락 개수를 세서 특정 제스처 감지
+// 과제 업그레이드---
+// 손가락 개수를 세어 특정 제스처를 감지하는 함수
 function detectGestureL(hand, keypoints) {
-  fingersUp = countFingers(hand);  
+  fingersUp = countFingers(hand);  // 현재 손가락 개수 측정
 
-  // 손가락 개수가 변하지 않았으면 아무것도 하지 않음
+  // 손가락 개수가 이전과 동일하면 아무 작업도 수행하지 않음 (중복 감지 방지)
   if (fingersUp === prevFingersUp) {
     return;
   }
   prevFingersUp = fingersUp; // 현재 손가락 개수를 이전 상태로 저장
-  print("L fingersUp:", fingersUp, "\n");
+  print("L fingersUp:", fingersUp, "\n"); // 현재 손가락 개수 출력
 
-  if (fingersUp == 0) { // 주먹
-    mode = "EMERGENCY"; // 주먹을 계속 쥐고 있으면 EMERGENCY 유지
+  // 손가락 개수에 따라 모드 변경
+  if (fingersUp == 0) { // 주먹을 쥐었을 때
+    mode = "EMERGENCY"; // EMERGENCY 모드로 변경
   } 
-  else if (fingersUp == 1) { // 검지
+  else if (fingersUp == 1) { // 검지 손가락 하나만 펼쳤을 때
     mode = "BLINK_ALL";
   } 
-  else if (fingersUp == 2) { // 브이
+  else if (fingersUp == 2) { // V 모양(검지+중지)일 때
     mode = "OFF";
   } 
-  else if (fingersUp == 4) { // 엄지빼고 다 폄 (NORMAL모드로 돌아감)
-    mode = "NORMAL";
+  else if (fingersUp == 4) { // 엄지를 제외한 모든 손가락을 펼쳤을 때
+    mode = "NORMAL"; // NORMAL 모드로 복귀
   }
     
-  if(port.opened()){
+  // 현재 모드를 아두이노로 전송
+  if (port.opened()) {
       let motion = `MODE:${mode}\n`; 
-
       port.write(motion);
-      console.log("Sent to Arduino:", motion);
+      console.log("Sent to Arduino:", motion); // 전송된 데이터 로그 출력
   }
 }
 
+// 오른손으로 특정 손가락 개수에 따라 신호 변경하는 함수
 function detectGestureR(hand, keypoints) {
     fingersUp = countFingers(hand);
-    print("R fingersUp:", fingersUp, "\n");
-  
+    print("R fingersUp:", fingersUp, "\n"); // 손가락 개수 출력
+
+    // 검지만 펴져 있을 때: 빨간불 지속 시간 변경
     if (fingersUp === 1 && isIndexFingerExtended(keypoints)) {
-      redTime = Math.floor(1/keypoints[8].y * 10000 + 10/keypoints[8].y * 8000); // 소수점 아래를 제거하기 위해 Math.floor()
+      redTime = Math.floor(1 / keypoints[8].y * 10000 + 10 / keypoints[8].y * 8000);
     }
+    // V 모양(검지+중지)일 때: 노란불 지속 시간 변경
     if (fingersUp === 2 && isVSign(keypoints)) {
-      yellowTime = Math.floor(1/keypoints[8].y * 10000 + 10/keypoints[8].y * 8000);
+      yellowTime = Math.floor(1 / keypoints[8].y * 10000 + 10 / keypoints[8].y * 8000);
     }
+    // 손가락 3개(검지+중지+약지) 펴졌을 때: 초록불 지속 시간 변경
     if (fingersUp === 3 && isThreeSign(keypoints)) {
-      greenTime = Math.floor(1/keypoints[8].y * 10000 + 10/keypoints[8].y * 8000);
+      greenTime = Math.floor(1 / keypoints[8].y * 10000 + 10 / keypoints[8].y * 8000);
     }
 }
 
-// 검지손가락만 펴져 있는지 확인
+// 검지 손가락만 펴져 있는지 확인하는 함수
 function isIndexFingerExtended(keypoints) {
   return countFingers(keypoints) === 1 && keypoints[8].y < keypoints[6].y;
 }
 
-// 브이(V) 표시인지 확인
+// 브이(V) 표시인지 확인하는 함수
 function isVSign(keypoints) {
   return countFingers(keypoints) === 2 &&
-         keypoints[8].y < keypoints[6].y &&
-         keypoints[12].y < keypoints[10].y;
+         keypoints[8].y < keypoints[6].y &&  // 검지가 손바닥보다 위에 있음
+         keypoints[12].y < keypoints[10].y;  // 중지도 손바닥보다 위에 있음
 }
 
-// 3 손가락 표시인지 확인
+// 3 손가락 표시인지 확인하는 함수
 function isThreeSign(keypoints) {
   return countFingers(keypoints) === 3 &&
-         keypoints[8].y < keypoints[6].y &&
-         keypoints[12].y < keypoints[10].y &&
-         keypoints[16].y < keypoints[14].y;
+         keypoints[8].y < keypoints[6].y &&   // 검지가 손바닥보다 위에 있음
+         keypoints[12].y < keypoints[10].y && // 중지가 손바닥보다 위에 있음
+         keypoints[16].y < keypoints[14].y;   // 약지가 손바닥보다 위에 있음
 }
 
-  
-// 왼손인지 오른손인지 판별
+// 왼손인지 오른손인지 판별하는 함수
 function Left_Right() {
   let handSide = detectHandSide(hands[0]); // 첫 번째 손만 판별
 
@@ -262,10 +280,11 @@ function Left_Right() {
   }
 }
 
+// 손이 왼손인지 오른손인지 판별하는 함수
 function detectHandSide(hand) {
   keypoints = hand.keypoints;
   
-  if (keypoints.length < 21) return; // keypoints가 부족하면 리턴
+  if (keypoints.length < 21) return "UNKNOWN"; // keypoints가 부족하면 판별 불가능
 
   let wristX = keypoints[0].x;   // 손목 (0번 keypoint)
   let thumbX = keypoints[4].x;   // 엄지손가락 끝 (4번 keypoint)
@@ -280,10 +299,9 @@ function detectHandSide(hand) {
   }
 }
 
-// 손가락 개수 판별 (엄지는 별도로 처리)
+// 손가락 개수를 판별하는 함수 (엄지는 별도로 처리)
 function countFingers(hand) {
   let fingers = 0;
-  // let keypoints = hand.keypoints;
 
   // 손가락 끝(keypoints[8], [12], [16], [20])이 손바닥보다 위에 있으면 펼친 것으로 판단
   if (keypoints[8].y < keypoints[6].y) fingers++;  // 검지
@@ -293,8 +311,7 @@ function countFingers(hand) {
 
   return fingers;
 }
-
-  //
+//------------------
 
 // async 붙으면 비동기 함수 : 특정 코드가 끝날 때까지 코드의 실행을 멈추지 않고 다음 코드를 먼저 실행함. (병렬 작동)
 // 버튼을 클릭하면 시리얼 포트와 연결/해제
@@ -332,7 +349,7 @@ function drawIndicators() {
 
   fill(0);  // 글씨 색상 (검은색)
   textSize(16);
-  text("Mode: " + mode, 100, 680); // 현재 모드 출력 
+  text("Mode: " + textMODE, 100, 680); // 현재 모드 출력 
 
   brightBtn.html(str(brightness)); // 밝기 버튼의 텍스트를 현재 밝기 값으로 업데이트 
   
