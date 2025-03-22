@@ -40,7 +40,7 @@
 
 아래 사진을 클릭하면 동작이 시연되는 것을 확인해볼 수 있습니다.
 
-[![시연과 설명 영상2](image\thumnail2.jpg)](https://www.youtube.com/watch?v=qqGw-CTZCQk)
+[![시연과 설명 영상2](image/thumnail2.jpg)](https://www.youtube.com/watch?v=qqGw-CTZCQk)
 
 --- 
 ## 하드웨어
