@@ -272,21 +272,21 @@ void updateTime(){
             greenTime = newgreenTime;
         }
         // 과제 업그레이드
-        if(input.startsWith("MODE:")){
-            String motion = input.substring(5);
-            if(motion == "EMERGENCY"){
-                currentMode = EMERGENCY;
+        if(input.startsWith("MODE:")){ // p5.js에서 받아온 값이 MODE:로 시작할 때 
+            String motion = input.substring(5); // MODE: 이후의 스트링을 motion으로 지정정
+            if(motion == "EMERGENCY"){ // motion이 EMERGENCY인 경우
+                currentMode = EMERGENCY; // 현재 모드를 EMERGENCY로 변경
             }
-            else if(motion == "BLINK_ALL"){
-                currentMode = BLINK_ALL;
+            else if(motion == "BLINK_ALL"){ // motion이 BLINK_ALL인 경우
+                currentMode = BLINK_ALL; // 현재 모드를 BLINK_ALL로 변경
             }
-            else if(motion == "OFF"){
-                currentMode = OFF;
+            else if(motion == "OFF"){ // motion이 OFF인 경우
+                currentMode = OFF; // 현재 모드를 OFF로 변경
             }
-            else if(motion == "NORMAL"){
-                currentMode = NORMAL;
+            else if(motion == "NORMAL"){ // motion이 NORMAL인 경우
+                currentMode = NORMAL; // 현재 모드를 NORMAL로 변경
             }
-            setMode();
+            setMode(); // setMode() 함수 실행 
         }
         //
     }
